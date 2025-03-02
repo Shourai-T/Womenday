@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/Womenday/heart.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy International Women's Day</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script type="module" crossorigin src="/Womenday/assets/index-Ilr6wfiq.js"></script>
+    <link rel="stylesheet" crossorigin href="/Womenday/assets/index-B7ck5UZF.css">
+  </head>
+  <body>
+    <div id="loading">
+      <div class="loader"></div>
+      <p>Creating something beautiful...</p>
+    </div>
+
+    <div id="app" class="hidden">
+      <canvas id="bg"></canvas>
+      
+      <main>
+        <header>
+          <div class="sound-toggle">
+            <button id="toggleSound">
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+        </header>
+
+        <section class="hero">
+          <h1 class="title">Happy International Women's Day</h1>
+          <p class="subtitle">Celebrating the strength, beauty, and resilience of women everywhere</p>
+          <div class="date">March 8th</div>
+          <button id="specialButton" class="cta-button">Open Your Gift</button>
+        </section>
+
+        <section class="personalize">
+          <h2>Create a Personal Message</h2>
+          <div class="form-group">
+            <input type="text" id="recipientName" placeholder="Recipient's Name">
+            <textarea id="personalMessage" placeholder="Your special message..."></textarea>
+            <button id="createMessage" class="cta-button">Create Card</button>
+          </div>
+          <div id="personalCard" class="hidden">
+            <div class="card-content">
+              <h3>Dear <span id="cardName"></span>,</h3>
+              <p id="cardMessage"></p>
+              <p class="signature">With love and appreciation,</p>
+            </div>
+            <div class="share-buttons">
+              <p>Tự gửi lời nhắn cho bản thân</p>
+              <div class="social-icons">
+                <a href="https://www.facebook.com/tuitentuan2511" class="social-icon" id="shareFacebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.facebook.com/tuitentuan2511" class="social-icon" id="shareTwitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/ahn_7aun/" class="social-icon" id="shareInstagram"><i class="fab fa-instagram"></i></a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="gallery">
+          <h2>Điểm mạnh</h2>
+          <div class="gallery-container">
+            <div class="gallery-item">
+              <div class="image-container">
+                <img src="/Womenday/assets/plien_1-Ck6TZEmp.jpg" alt="Women Empowerment">
+              </div>
+              <p>Xinh gái</p>
+            </div>
+            <div class="gallery-item">
+              <div class="image-container">
+                <img src="/Womenday/assets/plien_tuan-BYFQPaRM.jpg" alt="Women Leadership">
+              </div>
+              <p>Ghệ đẹp</p>
+            </div>
+            <div class="gallery-item">
+              <div class="image-container">
+                <img src="/Womenday/assets/plien_2-Bl3IVWrA.jpg" alt="Women Celebration">
+              </div>
+              <p>Tươi ^_^</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="quotes">
+          <h2>Những lời chúc tốt đẹp</h2>
+          <div class="quote-container">
+            <div class="quote">
+              <p>"Chúc em một ngày 8/3 tràn đầy niềm vui và hạnh phúc! Em chính là bông hoa đẹp nhất trong cuộc đời anh, mong rằng nụ cười của em sẽ luôn rạng rỡ như ánh nắng ban mai. Anh yêu em! 💖🌹"</p>
+              <cite>— Shourai</cite>
+            </div>
+            <div class="quote">
+              <p>"Gửi đến em – người con gái tuyệt vời nhất trong lòng anh, lời chúc ngọt ngào nhất nhân ngày Quốc tế Phụ nữ. Chúc em luôn xinh đẹp, mạnh mẽ và hạnh phúc. Cảm ơn em vì đã ở bên anh! 💕✨"</p>
+              <cite>— Brother Tuấn</cite>
+            </div>
+            <div class="quote">
+              <p>"Em là điều tuyệt vời nhất mà anh có! Nhân ngày 8/3, anh chúc em luôn vui vẻ, yêu đời, và gặp nhiều may mắn. Anh mong rằng mỗi ngày bên anh đều là một ngày hạnh phúc với em. Yêu em thật nhiều! ❤️🌷"</p>
+              <cite>— Tunglagamethu</cite>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          <p>Created with Your Love❤️ for International Women's Day</p>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/tuitentuan2511" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.facebook.com/tuitentuan2511" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com/ahn_7aun/" class="social-icon"><i class="fab fa-instagram"></i></a>
+          </div>
+        </footer>
+      </main>
+
+      <div id="gift-modal" class="modal hidden">
+        <div class="modal-content">
+          <div class="gift-box">
+            <div class="gift-lid"></div>
+            <div class="gift-container">
+              <div class="gift-ribbon-v"></div>
+              <div class="gift-ribbon-h"></div>
+              <div class="gift-sparkle"></div>
+              <div class="gift-sparkle"></div>
+              <div class="gift-sparkle"></div>
+              <div class="gift-sparkle"></div>
+            </div>
+            <div class="gift-message">
+              <h3>Happy Women's Day!</h3>
+              <p>Ai mở hộp quà này là người tuyệt vời nhất. Một ngày 8/3 thật tuỵt.</p>
+              <button id="closeGift" class="cta-button">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+  </body>
+</html>
