@@ -14,7 +14,7 @@ git commit -m "Deploy to GitHub Pages"
 
 # Force push to the gh-pages branch of your repository
 # Replace the URL with your GitHub repository URL
-git push -f https://github.com/Shourai-T/Womenday.git master:gh-pages
+git push -f https://github.com/Shourai-T/Womenday.git main:gh-pages
 
 cd -
 echo "Deployed to GitHub Pages!"
