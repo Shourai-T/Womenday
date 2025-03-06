@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { Howl } from 'howler';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+  import lyricsData from './lyrics';
 
 // DOM Elements
 const app = document.getElementById('app');
@@ -10,33 +12,186 @@ const toggleSoundBtn = document.getElementById('toggleSound');
 const specialButton = document.getElementById('specialButton');
 const giftModal = document.getElementById('gift-modal');
 const closeGiftBtn = document.getElementById('closeGift');
-const createMessageBtn = document.getElementById('createMessage');
-const personalCard = document.getElementById('personalCard');
-const recipientNameInput = document.getElementById('recipientName');
-const personalMessageInput = document.getElementById('personalMessage');
-const cardName = document.getElementById('cardName');
-const cardMessage = document.getElementById('cardMessage');
-const shareFacebook = document.getElementById('shareFacebook');
-const shareTwitter = document.getElementById('shareTwitter');
-const shareInstagram = document.getElementById('shareInstagram');
 
-// Audio
-const bgMusic = new Howl({
-  src: ['https://assets.mixkit.co/music/preview/mixkit-soft-piano-background-music-622.mp3'],
+
+const songTitle = document.getElementById('songTitle');
+const songLyrics = document.getElementById('songLyrics');
+const songBoxes = document.querySelectorAll('.song-box');
+const songLyricsContainer = document.getElementById('songLyricsContainer');
+
+// Songs data
+const songs = [
+  {
+    title: "FEIN",
+    src: "/Womenday/FEIN.mp3",
+    lyrics: lyricsData["FEIN"] || 'Searching...',
+    image: "fein.jpg"
+  },
+  {
+    title: "Khế ước",
+    src: "/Womenday/KheUoc.mp3",
+    lyrics: lyricsData['Khế Ước'] || 'Searching...',
+    image: "khe-uoc.jpg"
+  },
+  {
+    title: "Cơn mưa xa dần",
+    src: "/Womenday/ConMuaXaDan.mp3",
+    lyrics: lyricsData['Cơn mưa xa dần'] || 'Searching...',
+    image: "con-mua.jpg"
+  }
+];
+
+// // Audio
+// const bgMusic = new Howl({
+//   src: ['/Womenday/FEIN.mp3'],
+//   loop: true,
+//   volume: 0.5,
+//   autoplay: false, // Ban đầu không autoplay để tránh lỗi
+//   mute: true
+// });
+
+let currentSongIndex = 0;
+let bgMusic = new Howl({
+  src: [songs[currentSongIndex].src],
   loop: true,
   volume: 0.5,
-  autoplay: false
+  autoplay: false,
+  mute: false,
+  onplay: updateLyrics
+});
+
+// Cập nhật lyrics và tiêu đề khi bài hát phát
+// function updateLyrics() {
+//   songTitle.textContent = songs[currentSongIndex].title;
+//   songLyrics.textContent = songs[currentSongIndex].lyrics;
+  
+//   // Hiệu ứng chữ chạy
+//   gsap.fromTo(songLyrics, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 });
+
+//   // Highlight bài hát đang phát
+//   songBoxes.forEach((box, index) => {
+//     box.classList.toggle('active', index === currentSongIndex);
+//   });
+// }
+
+
+let lyricTimeout; // Biến lưu timeout để có thể xóa khi đổi bài
+
+function displayLyrics(lyrics) {
+  const lyricsContainer = document.getElementById("songLyrics"); // Lấy phần hiển thị lyrics
+  lyricsContainer.innerHTML = ""; // Xóa lyrics cũ
+
+  let currentIndex = 0; // Bắt đầu từ câu đầu tiên
+  const startTime = Date.now(); // Thời điểm bắt đầu bài hát
+
+  function showNextLine() {
+    if (currentIndex >= lyrics.length) {
+      return; // Kết thúc nếu hết lyrics
+    }
+
+    // Tính thời gian chờ dựa vào `time` của câu hiện tại
+    const currentTime = Date.now() - startTime;
+    const nextTime = lyrics[currentIndex].time * 1000;
+    const delay = Math.max(nextTime - currentTime, 0); // Đảm bảo không có thời gian âm
+
+    lyricTimeout = setTimeout(() => {
+      lyricsContainer.innerHTML = ""; // Xóa câu trước đó
+      const lineElement = document.createElement("p");
+      lineElement.textContent = lyrics[currentIndex].text;
+      lineElement.classList.add("lyric-line");
+      lyricsContainer.appendChild(lineElement);
+
+      // Animation xuất hiện
+      gsap.fromTo(lineElement, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 });
+
+      currentIndex++; // Chuyển sang câu tiếp theo
+      showNextLine(); // Gọi lại hàm để tiếp tục hiển thị câu tiếp theo
+    }, delay);
+  }
+
+  showNextLine(); // Bắt đầu hiển thị câu đầu tiên
+}
+
+
+function updateLyrics() {
+  const songTitle = document.getElementById("songTitle");
+  songTitle.textContent = songs[currentSongIndex].title;
+
+  const lyrics = songs[currentSongIndex].lyrics;
+    songBoxes.forEach((box, index) => {
+    box.classList.toggle('active', index === currentSongIndex);
+  });
+  clearTimeout(lyricTimeout);
+
+  displayLyrics(lyrics);
+}
+
+
+
+// Hàm đổi bài hát
+function changeSong(index) {
+  if (index === currentSongIndex) return; // Không đổi nếu chọn bài đang phát
+
+  // Dừng bài hát cũ
+  bgMusic.stop();
+
+  // Cập nhật index bài hát mới
+  currentSongIndex = index;
+
+  // Tạo đối tượng Howl mới cho bài hát mới
+  bgMusic = new Howl({
+    src: [songs[currentSongIndex].src],
+    loop: true,
+    volume: 0.5,
+    autoplay: true,
+    mute: false,
+    onplay: updateLyrics
+  });
+
+  // Phát bài hát mới
+  bgMusic.play();
+}
+
+// Xử lý đổi bài hát khi click vào ô vuông
+songBoxes.forEach((box, index) => {
+  box.addEventListener('click', () => {
+    changeSong(index);
+  });
 });
 
 const clickSound = new Howl({
-  src: ['https://assets.mixkit.co/sfx/preview/mixkit-interface-click-1126.mp3'],
-  volume: 0.5
+  src: ['/Womenday/https://assets.mixkit.co/sfx/preview/mixkit-interface-click-1126.mp3'],
+  volume: 1
 });
 
 const giftSound = new Howl({
-  src: ['https://assets.mixkit.co/sfx/preview/mixkit-magical-coin-win-1936.mp3'],
-  volume: 0.7
+  src: ['/Womenday/https://assets.mixkit.co/sfx/preview/mixkit-magical-coin-win-1936.mp3'],
+  volume: 1
 });
+
+// // Cập nhật lyrics và tiêu đề khi bài hát phát
+// function updateLyrics() {
+//   songTitle.textContent = songs[currentSongIndex].title;
+//   songLyrics.textContent = songs[currentSongIndex].lyrics;
+  
+//   // Hiệu ứng chữ chạy
+//   gsap.fromTo(songLyrics, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 });
+
+//   // Highlight bài hát đang phát
+//   songBoxes.forEach((box, index) => {
+//     box.classList.toggle('active', index === currentSongIndex);
+//   });
+// }
+
+// // Xử lý đổi bài hát khi click vào ô vuông
+// songBoxes.forEach((box) => {
+//   box.addEventListener('click', () => {
+//     currentSongIndex = parseInt(box.dataset.index);
+//     bgMusic.stop();
+//     bgMusic.src = [songs[currentSongIndex].src];
+//     bgMusic.play();
+//   });
+// });
 
 // Three.js Scene Setup
 const scene = new THREE.Scene();
@@ -291,16 +446,33 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Event Listeners
-toggleSoundBtn.addEventListener('click', () => {
-  clickSound.play();
+// // Khi người dùng nhấn nút tắt/mở âm thanh
+// toggleSoundBtn.addEventListener('click', () => {
+//   clickSound.play();
   
+//   if (bgMusic.playing()) {
+//     bgMusic.pause();
+//     toggleSoundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+//   } else {
+//     bgMusic.play();
+//     bgMusic.mute(false); // Bỏ mute nếu trước đó bị tắt
+//     toggleSoundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+//   }
+// });
+
+// Nút tắt/mở nhạc
+toggleSoundBtn.addEventListener('click', () => {
   if (bgMusic.playing()) {
     bgMusic.pause();
+    songLyricsContainer.classList.add('hidden');
     toggleSoundBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+
   } else {
     bgMusic.play();
+    bgMusic.mute(false);
+    songLyricsContainer.classList.remove('hidden');
     toggleSoundBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+
   }
 });
 
@@ -336,31 +508,32 @@ closeGiftBtn.addEventListener('click', () => {
   document.querySelector('.gift-message').style.opacity = '0';
 });
 
-createMessageBtn.addEventListener('click', () => {
-  clickSound.play();
+
+// createMessageBtn.addEventListener('click', () => {
+//   clickSound.play();
   
-  const name = recipientNameInput.value.trim() || 'Beautiful';
-  const message = personalMessageInput.value.trim() || 'Wishing you a wonderful Women\'s Day filled with joy, love, and appreciation. You are amazing!';
+//   const name = recipientNameInput.value.trim() || 'Beautiful';
+//   const message = personalMessageInput.value.trim() || 'Wishing you a wonderful Women\'s Day filled with joy, love, and appreciation. You are amazing!';
   
-  cardName.textContent = name;
-  cardMessage.textContent = message;
+//   cardName.textContent = name;
+//   cardMessage.textContent = message;
   
-  personalCard.classList.remove('hidden');
+//   personalCard.classList.remove('hidden');
   
-  // Scroll to card
-  setTimeout(() => {
-    personalCard.scrollIntoView({ behavior: 'smooth' });
-  }, 100);
+//   // Scroll to card
+//   setTimeout(() => {
+//     personalCard.scrollIntoView({ behavior: 'smooth' });
+//   }, 100);
   
-  // Update share links
-  const shareText = `Happy International Women's Day to ${name}! ${message}`;
-  const shareUrl = encodeURIComponent(window.location.href);
-  const shareTextEncoded = encodeURIComponent(shareText);
+//   // Update share links
+//   const shareText = `Happy International Women's Day to ${name}! ${message}`;
+//   const shareUrl = encodeURIComponent(window.location.href);
+//   const shareTextEncoded = encodeURIComponent(shareText);
   
-  shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareTextEncoded}`;
-  shareTwitter.href = `https://twitter.com/intent/tweet?text=${shareTextEncoded}&url=${shareUrl}`;
-  shareInstagram.href = `https://www.instagram.com/`;
-});
+//   shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareTextEncoded}`;
+//   shareTwitter.href = `https://twitter.com/intent/tweet?text=${shareTextEncoded}&url=${shareUrl}`;
+//   shareInstagram.href = `https://www.instagram.com/`;
+// });
 
 // Firework effect
 function createFirework() {
@@ -414,17 +587,24 @@ function createFirework() {
   }
 }
 
-// Initialize
+// Khi trang web tải xong, cố gắng bật nhạc
 window.addEventListener('load', () => {
-  // Hide loading screen after assets are loaded
   setTimeout(() => {
     loading.style.display = 'none';
     app.classList.remove('hidden');
-    
-    // Start animation
+
+    // Chạy animation Three.js
     animate();
-    
-    // Auto-play background music
+
+    // Tự động bật nhạc sau khi trang load xong
     bgMusic.play();
+    
+    // Khi người dùng click, bỏ mute và cho nhạc chạy
+    document.addEventListener('click', () => {
+      if (bgMusic.mute()) {
+        bgMusic.mute(false);
+      }
+    });
+
   }, 2000);
 });
